@@ -2,12 +2,14 @@
 using HotelManagement.Interfaces;
 using HotelManagement.Models;
 using HotelManagement.Models.DTO;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HotelManagement.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableCors("HotelCORS")]
     public class HotelController : ControllerBase
     {
         private readonly IHotelService<HotelDTO, int> _hotelService;
@@ -25,11 +27,11 @@ namespace HotelManagement.Controllers
         [HttpPost("AddHotelInformation")]
         [ProducesResponseType(typeof(HotelDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<HotelDTO> Add(HotelDTO hotel)
+        public async Task<ActionResult<HotelDTO>> Add(HotelDTO hotel)
         {
             try
             {
-                var hotelAddResult = _hotelService.Add(hotel);
+                var hotelAddResult = await _hotelService.Add(hotel);
                 if (hotelAddResult != null)
                     return Ok("Hotel Information Successfully Added!");
             }
@@ -46,11 +48,11 @@ namespace HotelManagement.Controllers
         [HttpPut("UpdateHotelInformation")]
         [ProducesResponseType(typeof(HotelDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<HotelDTO> Update(HotelDTO hotel)
+        public async Task<ActionResult<HotelDTO>> Update(HotelDTO hotel)
         {
             try
             {
-                var hotelUpdateResult = _hotelService.Update(hotel);
+                var hotelUpdateResult = await _hotelService.Update(hotel);
                 if (hotelUpdateResult != null)
                     return Ok("Hotel Information Successfully Updated!");
             }
@@ -64,13 +66,13 @@ namespace HotelManagement.Controllers
         }
 
         [HttpDelete("DeleteHotelInformation")]
-        [ProducesResponseType(typeof(HotelDeleteDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(HotelFunctionDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<HotelDeleteDTO> Delete(HotelDeleteDTO hotelDeleteDTO)
+        public async Task<ActionResult<HotelFunctionDTO>> Delete(HotelFunctionDTO hotelDeleteDTO)
         {
             try
             {
-                var hotelDeleteResult = _hotelService.Delete(hotelDeleteDTO.HotelId);
+                var hotelDeleteResult = await _hotelService.Delete(hotelDeleteDTO.HotelId);
                 if (hotelDeleteResult != null)
                     return Ok("Hotel Information Successfully Deleted!");
             }
@@ -86,11 +88,11 @@ namespace HotelManagement.Controllers
         [HttpGet("FetchAllHotels")]
         [ProducesResponseType(typeof(ICollection<HotelDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<ICollection<HotelDTO>> FetchAllHotels()
+        public async Task<ActionResult<ICollection<HotelDTO>?>> FetchAllHotels()
         {
             try
             {
-                var hotels = _hotelService.GetAll();
+                var hotels = await _hotelService.GetAll();
                 if (hotels != null)
                     return Ok(hotels);
             }
@@ -103,14 +105,34 @@ namespace HotelManagement.Controllers
             return NotFound(_error);
         }
 
-        [HttpGet("FetchHotelById")]
+        [HttpPost("FetchHotelById")]
         [ProducesResponseType(typeof(ICollection<HotelDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<ICollection<HotelDTO>> FetchHotelById(int hotelId)
+        public async Task<ActionResult<ICollection<HotelDTO>?>> FetchHotelById(HotelFunctionDTO hotelFunctionDTO)
         {
             try
             {
-                var hotel = _hotelService.GetById(hotelId);
+                var hotel = await _hotelService.GetById(hotelFunctionDTO.HotelId);
+                if (hotel != null)
+                    return Ok(hotel);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+            }
+            _error.Id = 2;
+            _error.Message = new Message().messages[4];
+            return NotFound(_error);
+        }
+
+        [HttpPost("FetchHotelByAgentId")]
+        [ProducesResponseType(typeof(ICollection<HotelDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<ICollection<HotelDTO>?>> FetchHotelByAgentId(HotelFunctionDTO hotelFunctionDTO)
+        {
+            try
+            {
+                var hotel = await _hotelService.GetByAgentId(hotelFunctionDTO.HotelId);
                 if (hotel != null)
                     return Ok(hotel);
             }

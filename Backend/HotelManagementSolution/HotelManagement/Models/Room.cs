@@ -27,7 +27,5 @@ namespace HotelManagement.Models
         [MaxLength(100, ErrorMessage = "Room type cannot exceed 100 characters")]
         public string? RoomType { get; set; }
 
-        [Required(ErrorMessage = "Availability status is required")]
-        public bool? IsAvailable { get; set; }
     }
 }

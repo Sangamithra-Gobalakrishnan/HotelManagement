@@ -21,6 +21,10 @@
   --cardBG: rgb(225, 225, 235)
 }
 
+html{
+  scroll-behavior: smooth;
+}
+
 a{
   text-decoration: none;
 }
@@ -33,7 +37,7 @@ li{
   padding: 4rem 0 2rem;
 }
 
-.container{
+.container-hotel{
   padding-left: 1.5rem;
   padding-right: 1.5rem;
 }
@@ -84,4 +88,21 @@ body{
   background: var(--bodyColor);
 }
 
+
+@media screen and (min-width:1240px) {
+  .container-hotel{
+    width: 80% !important;
+    margin: auto !important;
+  }
+
+  .section{
+    padding: 6rem 0 4rem;
+  }
+}
+
+@media screen and (min-width:2560px) {
+   body{
+    zoom:1.7;
+   }
+}
 

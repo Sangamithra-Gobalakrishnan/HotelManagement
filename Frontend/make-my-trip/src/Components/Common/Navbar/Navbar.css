@@ -37,7 +37,7 @@
 
         }
     }
-
+    
     @media screen and (max-width:768px){
         .navBar{
             position: absolute;
@@ -109,7 +109,39 @@
     }
 }
 
+.popup-add {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+    height: 100% !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+  
+  .popup-content-add {
+    background-color: #ffffff;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+.add-project-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: -45px;
+  }
+  .add-project{
+    background-color: #90e0ef;
+  }
+  .add-project:hover{
+    background-color: #90e0ef!important;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  }
 
+
+  
 @media screen and (min-width:769px){
     .toggleNavbar,.closeNavbar{
         display: none;

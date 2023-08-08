@@ -8,6 +8,9 @@ namespace HotelManagement.Models
         public int Id { get; set; }
 
         [Required]
+        public int AgentId { get; set; }
+
+        [Required]
         [MaxLength(25, ErrorMessage = "Should Not Exceed More Than 35 Characters")]
         public string? Name { get; set; }
 
@@ -41,7 +44,6 @@ namespace HotelManagement.Models
         public double? MaximumPriceRange { get; set; }
 
         public ICollection<Image>? Images { get; set; }
-
         public ICollection<Amenity>? AmenityType { get; set; }
     }
 }

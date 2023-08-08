@@ -2,7 +2,9 @@ import React,{useState} from "react";
 import {MdOutlineTravelExplore} from "react-icons/md";
 import {AiFillCloseCircle} from "react-icons/ai";
 import {TbGridDots} from "react-icons/tb";
+import Home from "../../Pages/Home/Home";
 import './Navbar.css';
+
 
 const Navbar = () => {
 
@@ -17,13 +19,14 @@ const Navbar = () => {
    const removeNavbar = () =>{
      setActive('navBar')
    }
+
     return (
         <section className="navBarSection">
             <header className="header flex">
 
                 <div className="logoDiv">
                     <a href="#" className="logo flex">
-                        <h1><MdOutlineTravelExplore className="icon"/> MakeMyTrip.</h1>
+                        <h1><MdOutlineTravelExplore className="icon"/> Mithra Majesty.</h1>
                     </a>
                 </div>
 
@@ -33,22 +36,16 @@ const Navbar = () => {
                          <a href="#" className="navLink">Home</a>
                        </li>
                        <li className="navItem">
-                         <a href="#" className="navLink">About</a>
+                         <a href="#portfolio" className="navLink">About</a>
                        </li>
                        <li className="navItem">
-                         <a href="#" className="navLink">Gallery</a>
+                         <a href="#gallery" className="navLink">Gallery</a>
                        </li>
                        <li className="navItem">
-                         <a href="#" className="navLink">Packages</a>
-                       </li>
-                       <li className="navItem">
-                         <a href="#" className="navLink">Hotels</a>
-                       </li>
-                       <li className="navItem">
-                         <a href="#" className="navLink">Contact</a>
+                         <a href="#footer" className="navLink">Contact</a>
                        </li>
                        <button className="btn">
-                         <a href="#">LOGIN</a>
+                         <a href="/login">LOGIN</a>
                        </button>
                     </ul>
 
@@ -59,9 +56,9 @@ const Navbar = () => {
 
                 <div onClick={showNav} className="toggleNavbar">
                     <TbGridDots className="icon"/>
-                </div>
-                
+                </div> 
             </header>
+            <Home/>
         </section>
     )
 }

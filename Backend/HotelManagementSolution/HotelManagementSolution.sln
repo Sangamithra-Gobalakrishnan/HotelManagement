@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33829.357
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserAuthentication", "UserAuthentication\UserAuthentication.csproj", "{51A64B07-2457-4F16-A8D0-083AC986EB61}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserAuthentication", "UserAuthentication\UserAuthentication.csproj", "{51A64B07-2457-4F16-A8D0-083AC986EB61}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HotelManagement", "HotelManagement\HotelManagement.csproj", "{77D00482-F067-433A-9ED3-78BB75210524}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HotelManagement", "HotelManagement\HotelManagement.csproj", "{77D00482-F067-433A-9ED3-78BB75210524}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reservation", "Reservation\Reservation.csproj", "{AFD7C647-D138-4A67-84BC-FB218D6EDF9D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Reservation", "Reservation\Reservation.csproj", "{AFD7C647-D138-4A67-84BC-FB218D6EDF9D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Feedback", "Feedback\Feedback.csproj", "{D04D2583-327B-4A77-9CF4-8603170B19BA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FeedbackAPI", "Feedback\FeedbackAPI.csproj", "{D04D2583-327B-4A77-9CF4-8603170B19BA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

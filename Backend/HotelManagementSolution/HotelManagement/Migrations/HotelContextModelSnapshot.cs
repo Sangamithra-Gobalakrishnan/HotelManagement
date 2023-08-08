@@ -55,6 +55,9 @@ namespace HotelManagement.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("AgentId")
+                        .HasColumnType("int");
+
                     b.Property<string>("City")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -132,10 +135,6 @@ namespace HotelManagement.Migrations
                     b.Property<int>("HotelId")
                         .HasColumnType("int");
 
-                    b.Property<bool?>("IsAvailable")
-                        .IsRequired()
-                        .HasColumnType("bit");
-
                     b.Property<double?>("Price")
                         .IsRequired()
                         .HasColumnType("float");
@@ -159,7 +158,7 @@ namespace HotelManagement.Migrations
             modelBuilder.Entity("HotelManagement.Models.Amenity", b =>
                 {
                     b.HasOne("HotelManagement.Models.Hotel", "Hotel")
-                        .WithMany("HotelAmenities")
+                        .WithMany("AmenityType")
                         .HasForeignKey("HotelId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -191,7 +190,7 @@ namespace HotelManagement.Migrations
 
             modelBuilder.Entity("HotelManagement.Models.Hotel", b =>
                 {
-                    b.Navigation("HotelAmenities");
+                    b.Navigation("AmenityType");
 
                     b.Navigation("Images");
                 });

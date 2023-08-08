@@ -1,37 +1,47 @@
 import React from 'react';
-//import { BrowserRouter as Router, Route, Routes} from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Navbar from './Components/Common/Navbar/Navbar';
-import Home from './Components/Pages/Home/Home';
-// import Booking from './Components/Pages/Booking/Booking';
-// import Contact from './Components/Pages/Contact/Contact';
-// import Feedback from './Components/Pages/Feedback/Feedback';
-// import Gallery from './Components/Pages/Gallery/Gallery';
-// import TourSpotDetails from './Components/Pages/Tourspotdetails/Tourspotdetails';
-import './App.css';
+import Login from './Components/Pages/Login/Login';
+import Hotel from './Components/Pages/Hotel/Hotel';
+import Roomdetails from './Components/Pages/Roomdetails/Roomdetails';
 import Portfolio from './Components/Pages/Portfolio/Portfolio';
+import Footer from './Components/Common/Footer/Footer';
+import Approveagents from './Components/Pages/Approveagents/Approveagents';
+import Approvedagents from './Components/Pages/Approvedagents/Approvedagents';
+import Adminpage from './Components/Pages/Adminpage/adminpage';
+import Travellerpage from './Components/Pages/Travellerpage/Travellerpage';
+import Agentpage from './Components/Pages/Agentpage/Agentpage';
+import Agentroomdetails from './Components/Pages/Agentroomdetails/Agentroomdetails';
+import AddHotel from './Components/Pages/AddHotel/Addhotel';
+import Gallery from './Components/Pages/Gallery/Gallery';
+import './App.css';
+
+
+
 
 function App() {
   return (
     <div>
-      <Navbar/>
-      <Home/>
-      <Portfolio/>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Navbar />} />
+          <Route path="/login" element = {<Login/>}/>
+          <Route path="/hotels" element = {<Hotel/>}/>
+          <Route path="/roomDetails/:id" element = {<Roomdetails/>}/>
+          <Route path="/portfolio" element = {<Portfolio/>}/>
+          <Route path="/footer" element = {<Footer/>}/>
+          <Route path="/approveAgents" element = {<Approveagents/>}/>
+          <Route path="/approvedAgents" element = {<Approvedagents/>}/>
+          <Route path="/adminPage" element = {<Adminpage/>}/>
+          <Route path= "/travellerPage" element = {<Travellerpage/>}/>
+          <Route path= "/agentPage" element = {<Agentpage/>}/>
+          <Route path="/agentRoomDetails/:id" element = {<Agentroomdetails/>}/>
+          <Route path="/addHotel" element = {<AddHotel/>}/>
+          <Route path="/gallery" element = {<Gallery/>}/>
+        </Routes>
+      </BrowserRouter>
     </div>
-    // <Router>
-    //   <div>
-    //     <Navbar />
-    //     <Routes>
-    //       <Route exact path="/" component={Home} />
-    //       <Route path="/contact" component={Contact} />
-    //       <Route path="/feedback" component={Feedback} />
-    //       <Route path="/booking" component={Booking} />
-    //       <Route path="/gallery" component={Gallery} />
-    //       <Route path="/tour/:id" component={TourSpotDetails} />
-    //     </Routes>
-    //   </div>
-    // </Router>
   );
 }
-
 
 export default App;

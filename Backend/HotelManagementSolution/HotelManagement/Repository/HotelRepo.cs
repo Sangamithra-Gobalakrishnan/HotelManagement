@@ -71,7 +71,7 @@ namespace HotelManagement.Repository
             {
                 try
                 {
-                    return await _hotelContext.Hotels.ToListAsync();
+                   return await _hotelContext.Hotels.ToListAsync();
                 }
                 catch (DbUpdateException)
                 {
@@ -85,6 +85,27 @@ namespace HotelManagement.Repository
             throw new DatabaseNullException("HotelContext is not properly initialized.");
         }
 
+        public async Task<ICollection<Hotel>?> GetByAgentId(int key)
+        {
+            if (_hotelContext.Hotels != null)
+            {
+                try
+                {
+                    var hotels = await _hotelContext.Hotels.Where(a => a.AgentId == key).ToListAsync();
+                    return hotels;
+                }
+                catch (DbUpdateException)
+                {
+                    throw new HotelException($"Error occurred while getting the hotel with ID {key}.");
+                }
+                catch (SqlException)
+                {
+                    throw new SqlDatabaseException($"SQL Server error occurred while getting the hotel with ID {key}.");
+                }
+            }
+            throw new DatabaseNullException("HotelContext is not properly initialized.");
+        }
+
         public async Task<Hotel?> GetById(int key)
         {
             if (_hotelContext.Hotels != null)
@@ -92,6 +113,7 @@ namespace HotelManagement.Repository
                 try
                 {
                     return await _hotelContext.Hotels.FindAsync(key);
+
                 }
                 catch (DbUpdateException)
                 {

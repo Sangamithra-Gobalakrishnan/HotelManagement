@@ -78,6 +78,7 @@
     .portfolio .secContainer .rightContent .icon-icon {
       margin: auto;
       max-width: 80%;
+      border-radius: 50px;
     }
   }
   
@@ -101,7 +102,7 @@
     }
   
     .portfolio .secContainer .rightContent .icon-icon {
-       height:370px;
+       height:390px;
        width:800px;
        border-radius: 50px;
     }
