@@ -5,7 +5,6 @@ import { Link, useNavigate } from 'react-router-dom';  // Import Link from react
 
 import Aos from 'aos';
 import 'aos/dist/aos.css';
-import Roomdetails from '../Roomdetails/Roomdetails';
 
 const Hotel = () => {
   const [hotels, setHotels] = useState([]);
@@ -23,32 +22,37 @@ const Hotel = () => {
     }
   };
 
+
   var navigate=useNavigate();
 
 
   const fetchHotelImages = async () => {
-    const imagePromises = hotels.map(async (hotel) => {
-        try {
-            const response = await fetch(`http://localhost:5252/api/Image/FetchImagesByHotelId`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ hotelId: hotel.id })
-            });
-            const jsonData = await response.json();
-            if (jsonData.length > 0) {
-                return jsonData[0].imageUrl;
-            }
-        } catch (error) {
-            console.error('Error fetching hotel images:', error);
+    const imageUrls = [];
+  
+    for (const hotel of hotels) {
+      try {
+        const response = await fetch(`http://localhost:5252/api/Image/FetchImagesByHotelId`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ hotelId: hotel.id })
+        });
+        const jsonData = await response.json();
+        if (jsonData.length > 0) {
+          imageUrls.push(jsonData[0].imageUrl);
+        } else {
+          imageUrls.push(null); // Push null for hotels with no images
         }
-        return null;
-    });
-
-    const imageUrls = await Promise.all(imagePromises);
+      } catch (error) {
+        console.error('Error fetching hotel images:', error);
+        imageUrls.push(null); // Push null in case of error
+      }
+    }
+  
     return imageUrls;
   };
+  
 
   var navigateYoRoom=(data)=>{
     navigate('/roomDetails/'+{data});
@@ -116,9 +120,9 @@ const Hotel = () => {
                 </div>
 
                 <div className="price">
-                  <h5>
-                    {hotel.minimumPriceRange}-{hotel.maximumPriceRange}
-                  </h5>
+                <h5>
+                    &#x20B9;{hotel.minimumPriceRange}-&#x20B9;{hotel.maximumPriceRange}
+                </h5>
                 </div>
               </div>
 

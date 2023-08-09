@@ -1,10 +1,8 @@
-/* Global Styles */
 body {
   margin: 0;
   font-family: Arial, sans-serif;
 }
 
-/* Container for Hotel Details */
 .hotel-details-container {
   display: flex;
   justify-content: space-between;
@@ -13,7 +11,6 @@ body {
   height: 100vh;
 }
 
-/* Left Side of Container */
 .left-side {
   width: 50%;
   overflow: hidden;

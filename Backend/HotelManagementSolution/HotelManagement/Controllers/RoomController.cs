@@ -33,7 +33,7 @@ namespace HotelManagement.Controllers
             {
                 var roomAddResult = await _roomService.Add(room);
                 if (roomAddResult != null)
-                    return Ok("Room Information Successfully Added!");
+                    return Ok(roomAddResult);
             }
             catch (Exception ex)
             {

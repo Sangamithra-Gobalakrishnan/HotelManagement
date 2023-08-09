@@ -11,6 +11,12 @@ import 'aos/dist/aos.css';
 import './Travellerpage.css';
 import { useNavigate } from "react-router-dom";
 
+import defaultHotelImage1 from './img3.jpg';
+import defaultHotelImage2 from './img1.jpg';
+import defaultHotelImage3 from './img2.jpg';
+import defaultHotelImage4 from './img4.jpg';
+import defaultHotelImage5 from './img5.jpg';
+
 
 const Travellerpage = () => {
 
@@ -58,7 +64,7 @@ const Travellerpage = () => {
     useEffect(() => {
         fetchData();
         fetchHotelImages().then((imageUrls) => {
-            setHotelImages(imageUrls); // Set the fetched image URLs in the state
+            setHotelImages(imageUrls); 
         });
     }, [currentPage]);
 
@@ -88,6 +94,11 @@ const Travellerpage = () => {
 
     );
 
+    const handleLogout = () => {
+        sessionStorage.clear();
+        navigate('/');
+    };
+
    const [active, setActive] = useState('navBar');
 
    //Function to toggle Navbar
@@ -99,6 +110,14 @@ const Travellerpage = () => {
    const removeNavbar = () =>{
      setActive('navBar')
    }
+
+   const staticImages = [
+    defaultHotelImage1,
+    defaultHotelImage2,
+    defaultHotelImage3,
+    defaultHotelImage4,
+    defaultHotelImage5
+];
 
     return (
         <section className="navBarSection">
@@ -116,10 +135,10 @@ const Travellerpage = () => {
                          <a href="#" className="navLink">Book Hotel</a>
                        </li>
                        <li className="navItem">
-                         <a href="/booking" className="navLink">Cancel Booking</a>
+                         <a href="/bookedRooms" className="navLink">Your Bookings</a>
                        </li>
                        <button className="btn">
-                         <a href="/login">LOGOUT</a>
+                         <a onClick={handleLogout}>LOGOUT</a>
                        </button>
                     </ul>
 
@@ -142,11 +161,15 @@ const Travellerpage = () => {
 
             <div className="secContent grid" data-aos="fade-up">
             {hotels
-                .slice((currentPage - 1) * hotelsPerPage, currentPage * hotelsPerPage)
-                .map((hotel, index) => (
-                    <div key={hotel.id} className="singleDestination">
-                        <div className="imageDiv">
-                            <img className="imgcs" src={hotelImages[index]} alt="Hotel" />
+                 .slice((currentPage - 1) * hotelsPerPage, currentPage * hotelsPerPage)
+                 .map((hotel, index) => (
+                     <div key={hotel.id} className="singleDestination">
+                         <div className="imageDiv">
+                             <img
+                                 className="imgcs"
+                                 src={hotelImages[index]?.amenityTypeOrImage || staticImages[index % staticImages.length]}
+                                 alt="Hotel"
+                             />
                         </div>
 
                             <div className="cardInfo">
@@ -165,9 +188,9 @@ const Travellerpage = () => {
                                     </div>
 
                                     <div className="price">
-                                        <h5>
-                                            {hotel.minimumPriceRange}-{hotel.maximumPriceRange}
-                                        </h5>
+                                    <h5>
+                                        &#x20B9;{hotel.minimumPriceRange}-&#x20B9;{hotel.maximumPriceRange}
+                                    </h5>
                                     </div>
                                 </div>
 

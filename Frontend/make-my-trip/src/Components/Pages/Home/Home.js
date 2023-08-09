@@ -9,7 +9,6 @@ import { SiTripadvisor } from "react-icons/si";
 import {TbApps} from "react-icons/tb";
 import {FiFacebook} from "react-icons/fi";
 import {BsWallet2} from "react-icons/bs";
-import Gallery from "../Gallery/Gallery";
 import Footer from "../../Common/Footer/Footer"; // Adjusted import path
 
 
@@ -45,17 +44,18 @@ const Home = () => {
 
                    <div data-aos="fade-up" className="cardDiv grid">
                        <div className="destinationInput">
-                        <label className="lb" htmlFor="city">Search your Destination</label>
+                        <label className="lb" htmlFor="city">Enter your Country</label>
                         <div className="input flex">
-                            <input className="input-box" type="text" placeholder="Enter location here"/>
+                            <input className="input-box" type="text" placeholder="Enter country here"/>
                             <GrLocation className="icon"/>
                         </div>
                        </div>
 
                        <div className="dateInput">
-                        <label className="lb" htmlFor="date">Select your Date</label>
+                        <label className="lb" htmlFor="date">Enter your City</label>
                         <div className="input flex">
-                            <input className="input-box" type="date"/>
+                            <input className="input-box" type="text" placeholder="Enter city here"/>
+                            <GrLocation className="icon"/>
                         </div>
                        </div>
 
@@ -90,7 +90,6 @@ const Home = () => {
                </div>   
         </section>
         <Portfolio />
-        <Gallery/>
         <Footer />
         </div>
     )

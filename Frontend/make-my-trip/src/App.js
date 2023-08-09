@@ -14,12 +14,16 @@ import Agentpage from './Components/Pages/Agentpage/Agentpage';
 import Agentroomdetails from './Components/Pages/Agentroomdetails/Agentroomdetails';
 import AddHotel from './Components/Pages/AddHotel/Addhotel';
 import Gallery from './Components/Pages/Gallery/Gallery';
+import BookedRooms from './Components/Pages/BookedRooms/BookedRooms';
+import AdminProtected from './Components/ProtectedRoutes/AdminProtected';
+import AgentProtected from './Components/ProtectedRoutes/AgentProtected';
+import TravellerProtected from './Components/ProtectedRoutes/TravellerProtected';
 import './App.css';
 
-
-
-
 function App() {
+
+  var token;
+
   return (
     <div>
       <BrowserRouter>
@@ -32,12 +36,25 @@ function App() {
           <Route path="/footer" element = {<Footer/>}/>
           <Route path="/approveAgents" element = {<Approveagents/>}/>
           <Route path="/approvedAgents" element = {<Approvedagents/>}/>
-          <Route path="/adminPage" element = {<Adminpage/>}/>
-          <Route path= "/travellerPage" element = {<Travellerpage/>}/>
-          <Route path= "/agentPage" element = {<Agentpage/>}/>
           <Route path="/agentRoomDetails/:id" element = {<Agentroomdetails/>}/>
           <Route path="/addHotel" element = {<AddHotel/>}/>
           <Route path="/gallery" element = {<Gallery/>}/>
+          <Route path="/bookedRooms" element = {<BookedRooms/>}/>
+          <Route path='/adminPage' element={
+          <AdminProtected token={token}>
+            <Adminpage/>
+          </AdminProtected>
+        } />
+         <Route path='/travellerPage' element={
+          <TravellerProtected token={token}>
+            <Travellerpage/>
+          </TravellerProtected>
+        } />
+         <Route path='/agentPage' element={
+          <AgentProtected token={token}>
+            <Agentpage/>
+          </AgentProtected>
+        } />
         </Routes>
       </BrowserRouter>
     </div>

@@ -39,7 +39,7 @@ const Navbar = () => {
                          <a href="#portfolio" className="navLink">About</a>
                        </li>
                        <li className="navItem">
-                         <a href="#gallery" className="navLink">Gallery</a>
+                         <a href="/gallery" className="navLink">Gallery</a>
                        </li>
                        <li className="navItem">
                          <a href="#footer" className="navLink">Contact</a>

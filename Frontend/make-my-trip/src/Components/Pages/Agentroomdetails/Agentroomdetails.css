@@ -1,4 +1,3 @@
-/* File Upload Label and Input */
 .file-upload-label {
     position: relative;
     display: inline-block;
@@ -15,8 +14,6 @@
     width: 100%;
     height: 100%;
   }
-
-  /* Shared Popup Styles */
 
 .popup-overlay {
   position: fixed;
@@ -80,7 +77,57 @@
     margin-left: 10px;
   }
   
-  /* ... (existing styles) */
+
+.left-side {
+  background-color: #f8f8f8;
+  border-radius: 8px;
+  padding: 20px;
+  margin-right: 20px;
+}
+
+.add-amenity,
+.add-room,
+.add-image {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.amenities-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+}
+
+.amenity-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f0f0f0;
+  padding: 8px;
+  border-radius: 4px;
+}
+
+.delete-amenity {
+  background-color: #ff6565;
+  color: #fff;
+  border: none;
+  padding: 4px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.button-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  border-bottom: 1.5px solid rebeccapurple;
+  padding: 10px;
+}
+
+
   
  
   

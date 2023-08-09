@@ -5,6 +5,7 @@ import { Carousel } from 'react-responsive-carousel';
 import { useParams } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { BlobServiceClient } from '@azure/storage-blob';
 
 const Agentroomdetails = () => {
   var { id } = useParams();
@@ -16,16 +17,150 @@ const Agentroomdetails = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const roomsPerPage = 5;
   const [hotel, setHotel] = useState(null);
+  const [hotelImage, setHotelImage] = useState({
+    "id": 0,
+    "hotelId" : Number(id),
+    "amenityTypeOrImage": ""
+  })
 
-  const [showRoomPopup, setShowRoomPopup] = useState(false); 
+  const [showRoomPopup, setShowRoomPopup] = useState(false);
 
   const totalPages = Math.ceil(roomsData.length / roomsPerPage);
 
-  const addAmenity = () => {
+  const handleDeleteAmenity = (index) => {
+    const updatedAmenities = amenities.filter((_, i) => i !== index);
+    setAmenities(updatedAmenities);
+    toast.success('Amenity deleted successfully.');
+  };
+  const [imageFile, setImageFiles] = useState();
+  const handleImageChange = (event) => {
+    const files = Array.from(event.target.files);
+    setImageFiles(files);
+    const str ="http://127.0.0.1:10000/devstoreaccount1/bigbang/bigbang/"+files[0].name
+    setHotelImage({...hotelImage,amenityTypeOrImage:str})
+  };
+
+  const handleUpload = async () => {
+    const AZURITE_BLOB_SERVICE_URL = 'http://localhost:10000';
+    const ACCOUNT_NAME = 'devstoreaccount1';
+    const ACCOUNT_KEY = 'Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==';
+  
+    const blobServiceClient = new BlobServiceClient(
+      "http://127.0.0.1:10000/devstoreaccount1/bigbang?sv=2018-03-28&st=2023-08-09T04%3A46%3A49Z&se=2023-08-10T04%3A46%3A49Z&sr=c&sp=racwdl&sig=fhVDk6bpjm2WQsxam7UvsGSufUPE%2BQ5jruRnPKy%2Fxb8%3D",
+      "sv=2018-03-28&st=2023-08-09T04%3A46%3A49Z&se=2023-08-10T04%3A46%3A49Z&sr=c&sp=racwdl&sig=fhVDk6bpjm2WQsxam7UvsGSufUPE%2BQ5jruRnPKy%2Fxb8%3D"
+    );
+  
+    const containerClient = blobServiceClient.getContainerClient('bigbang');
+        const blobClient = containerClient.getBlobClient(imageFile[0].name);
+        const blockBlobClient = blobClient.getBlockBlobClient();
+        const result = await blockBlobClient.uploadBrowserData(imageFile[0], {
+          blockSize: 4 * 1024 * 1024,
+          concurrency: 20,
+          onProgress: ev => console.log(ev)
+        });
+  };
+
+  const addAmenity = async () => {
     if (newAmenity) {
-      setAmenities([...amenities, newAmenity]);
-      setNewAmenity('');
-      closeAmenityPopup();
+      try {
+        const response = await fetch(`http://localhost:5252/api/Amenity/AddAmenityInformation`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            hotelId: id,
+            amenityTypeOrImage: encodeURIComponent(newAmenity),
+          }),
+        });
+
+        if (response.ok) {
+          const newAmenityData = [...amenities, { amenityTypeOrImage: newAmenity }];
+          setAmenities(newAmenityData);
+          closeAmenityPopup();
+          toast.success('Amenity added successfully.');
+        } else {
+          console.log('Failed to add amenity. Status:', response.status);
+          const errorResponseText = await response.text();
+          console.log('Error Response:', errorResponseText);
+          toast.error('Failed to add amenity.');
+        }
+
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  };
+
+  const uploadImage = async () => {
+    handleUpload(); {
+      try {
+        const response = await fetch(`http://localhost:5252/api/Image/AddImage`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(hotelImage),
+        });
+  
+        if (response.ok) {
+          closeImagePopup();
+          toast.success('Image uploaded successfully.');
+        } else {
+          toast.error('Failed to upload image.');
+        }
+      } catch (error) {
+        console.error('Error uploading image:', error);
+      }
+    }
+  };
+  
+
+  var agent = Number(sessionStorage.getItem('userId'));
+  console.log(agent);
+
+  const [roomInputs, setRoomInputs] = useState({
+    hotelId: id,
+    agentId: agent,
+    roomId: '',
+    price: '',
+    capacity: '',
+    roomType: '',
+  });
+
+  const addRoom = async () => {
+    if (
+      roomInputs.price &&
+      roomInputs.capacity &&
+      roomInputs.roomType
+    ) {
+      try {
+        const response = await fetch(`http://localhost:5252/api/Room/AddRoomInformation`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            hotelId: id,
+            roomId: 0,
+            price: roomInputs.price,
+            capacity: roomInputs.capacity,
+            roomType: roomInputs.roomType,
+          }),
+        });
+
+        if (response.ok) {
+          const jsonData = await response.json();
+          setRoomsData([...roomsData, jsonData]);
+          closeRoomPopup();
+          toast.success('Room added successfully.');
+        } else {
+          toast.error('Failed to add room.');
+        }
+
+      } catch (error) {
+        console.error('Error adding room:', error);
+      }
     }
   };
 
@@ -42,26 +177,19 @@ const Agentroomdetails = () => {
     setNewAmenity(e.target.value);
   };
 
-  const [showAmenityPopup, setShowAmenityPopup] = useState(false);
+  const [showImagePopup, setShowImagePopup] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
 
-  const [roomInputs, setRoomInputs] = useState({
-    roomId: '',
-    price: '',
-    capacity: '',
-    roomType: '',
-  });
-
-  const addRoom = () => {
-    if (
-      roomInputs.roomId &&
-      roomInputs.price &&
-      roomInputs.capacity &&
-      roomInputs.roomType
-    ) {
-      setRoomsData([...roomsData, { ...roomInputs }]);
-      closeRoomPopup();
-    }
+  const openImagePopup = () => {
+    setShowImagePopup(true);
   };
+
+  const closeImagePopup = () => {
+    setShowImagePopup(false);
+    setSelectedImage(null);
+  };
+
+  const [showAmenityPopup, setShowAmenityPopup] = useState(false);
 
   const openRoomPopup = () => {
     setShowRoomPopup(true);
@@ -151,27 +279,38 @@ const Agentroomdetails = () => {
     }
   }, [id]);
 
-  useEffect(() => {
-    if (id) {
-      const fetchImages = async () => {
-        try {
-          const response = await fetch(`http://localhost:5252/api/Images/FetchImagesByHotelId`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ hotelId: id }),
-          });
-          const jsonData = await response.json();
-          setImages(jsonData);
-        } catch (error) {
-          console.error('Error fetching images:', error);
-        }
-      };
 
-      fetchImages();
+  const [hId,setHId]=useState(
+    {
+      "hotelId": 0
     }
-  }, [id]);
+  )
+
+  useEffect(()=>{
+    hId.hotelId=id
+    fetch("http://localhost:5252/api/Image/FetchImagesByHotelId",
+            {
+                "method": "POST",
+                headers: {
+                    "accept": "text/plain",
+                    "Content-Type": 'application/json',
+                },
+                "body": JSON.stringify(hId)
+            })
+            .then(async (data) => {
+                if (data.status == 200) {
+                    var myData = await data.json();
+                    console.log(myData, "output");
+                    setImages(myData);
+                }
+                else {
+                    console.log(await data.text());
+                }
+            })
+            .catch((err) => {
+                console.log(err.error)
+            })
+  },[])
 
   if (!hotel) {
     return <div>Loading...</div>;
@@ -184,7 +323,7 @@ const Agentroomdetails = () => {
           <Carousel>
             {images.map((image, index) => (
               <div key={index}>
-                <img src={image.imageUrl} alt={`Image ${index + 1}`} />
+                <img src={image.amenityTypeOrImage} alt={`Image ${index + 1}`} />
               </div>
             ))}
           </Carousel>
@@ -196,7 +335,7 @@ const Agentroomdetails = () => {
           <p>Number of Rooms: {hotel.numberOfRooms}</p>
           <p>Contact: {hotel.contactNumber}</p>
           <p>Email: {hotel.email}</p>
-          <p>Price Range: {hotel.minimumPriceRange} - {hotel.maximumPriceRange}</p>
+          <p>Price Range:   &#x20B9;{hotel.minimumPriceRange}-&#x20B9;{hotel.maximumPriceRange}</p>
         </div>
       </div>
 
@@ -205,13 +344,22 @@ const Agentroomdetails = () => {
           <span>
             <h2>
               {hotel.name}
-              <label className="file-upload-label">
-                <input type="file" className="file-upload-input" />
-                <button className="btn">Upload Image</button>
-              </label>
             </h2>
           </span>
         </div>
+
+        <div className="button-row">
+          <button onClick={openImagePopup} className="btn">
+            Upload Image
+          </button>
+          <button onClick={openAmenityPopup} className="btn">
+            Add Amenity
+          </button>
+          <button onClick={openRoomPopup} className="btn">
+            Add Room
+          </button>
+      </div>
+
 
         <div className="amenities">
           <h2>Amenities</h2>
@@ -219,22 +367,18 @@ const Agentroomdetails = () => {
             {amenities.map((amenity, index) => (
               <div key={index} className="amenity-item">
                 <span>{amenity.amenityTypeOrImage}</span>
+                <button
+                  onClick={() => handleDeleteAmenity(index)}
+                  className="delete-amenity"
+                >
+                  &#10060;
+                </button>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="add-amenity">
-          <button onClick={openAmenityPopup} className="btn">
-            Add Amenity
-          </button>
-        </div>
-
-        <div className="add-room">
-          <button onClick={openRoomPopup} className="btn">
-            Add Room
-          </button>
-        </div>
+        
 
         <div className="rooms">
           <h2>Rooms Available</h2>
@@ -301,19 +445,10 @@ const Agentroomdetails = () => {
         </div>
       )}
 
-
       {showRoomPopup && (
         <div className="popup-overlay">
           <div className="popup-content">
             <h2>Add Room</h2>
-            <input
-              type="text"
-              placeholder="Room ID"
-              name="roomId"
-              value={roomInputs.roomId}
-              onChange={handleRoomInputChange}
-              className="popup-input"
-            />
             <label>Price</label>
             <input
               type="text"
@@ -323,20 +458,20 @@ const Agentroomdetails = () => {
               onChange={handleRoomInputChange}
               className="popup-input"
             />
-             <label>Capacity</label>
+            <label>Capacity</label>
             <input
               type="text"
               placeholder="Capacity"
-              name="price"
+              name="capacity"
               value={roomInputs.capacity}
               onChange={handleRoomInputChange}
               className="popup-input"
             />
-             <label>Room Type</label>
+            <label>Room Type</label>
             <input
               type="text"
               placeholder="Room Type"
-              name="price"
+              name="roomType"
               value={roomInputs.roomType}
               onChange={handleRoomInputChange}
               className="popup-input"
@@ -350,6 +485,27 @@ const Agentroomdetails = () => {
           </div>
         </div>
       )}
+
+      {showImagePopup && (
+        <div className="popup-overlay">
+          <div className="popup-content">
+            <h2>Upload Image</h2>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="popup-input"
+            />
+            <button onClick={uploadImage} className="popup-button">
+              Upload
+            </button>
+            <button onClick={closeImagePopup} className="popup-button btn-secondary">
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };

@@ -11,7 +11,6 @@ const Roomdetails = () => {
   var { id } = useParams();
 
   const [amenities, setAmenities] = useState([]);
-  const [newAmenity, setNewAmenity] = useState('');
   const [images, setImages] = useState([]);
   const [roomsData, setRoomsData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -94,27 +93,37 @@ const Roomdetails = () => {
     }
   }, [id]);
 
-  useEffect(() => {
-    if (id) {
-      const fetchImages = async () => {
-        try {
-          const response = await fetch(`http://localhost:5252/api/Images/FetchImagesByHotelId`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ hotelId: id }),
-          });
-          const jsonData = await response.json();
-          setImages(jsonData); // Assuming the response is an array of image URLs
-        } catch (error) {
-          console.error('Error fetching images:', error);
-        }
-      };
-
-      fetchImages();
+  const [hId,setHId]=useState(
+    {
+      "hotelId": 0
     }
-  }, [id]);
+  )
+
+  useEffect(()=>{
+    hId.hotelId=id
+    fetch("http://localhost:5252/api/Image/FetchImagesByHotelId",
+            {
+                "method": "POST",
+                headers: {
+                    "accept": "text/plain",
+                    "Content-Type": 'application/json',
+                },
+                "body": JSON.stringify(hId)
+            })
+            .then(async (data) => {
+                if (data.status == 200) {
+                    var myData = await data.json();
+                    console.log(myData, "output");
+                    setImages(myData);
+                }
+                else {
+                    console.log(await data.text());
+                }
+            })
+            .catch((err) => {
+                console.log(err.error)
+            })
+  },[])
 
   const openBookingPopup = () => {
     setBookingPopupOpen(true);
@@ -133,7 +142,7 @@ const Roomdetails = () => {
     }
   };
 
-  const handleConfirmBooking = () => {
+  const handleConfirmBooking = async () => {
     if (selectedRooms.length === 0) {
       alert('Please select at least one room for booking.');
       return;
@@ -158,6 +167,39 @@ const Roomdetails = () => {
       return;
     }
   
+    // Create a booking object based on the provided data model
+    const bookingObject = {
+      userId: sessionStorage.getItem('userId'), // Get userId from sessionStorage
+      hotelId: id,
+      roomId: selectedRooms[0], // Assuming only one room can be selected
+      startDate: bookingDetails.startDate,
+      endDate: bookingDetails.endDate,
+      adultCount: bookingDetails.adultCount,
+      childCount: bookingDetails.childrenCount,
+    };
+  
+    try {
+      // Make the API call to create a booking
+      const response = await fetch('http://localhost:5130/api/Booking/Booking', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(bookingObject),
+      });
+  
+      if (response.ok) {
+        // Booking successful
+        toast.success('Booking created successfully!', { autoClose: 5000 });
+      } else {
+        // Booking failed
+        toast.error('Error creating booking. Please try again later.', { autoClose: 5000 });
+      }
+    } catch (error) {
+      console.error('Error creating booking:', error);
+    }
+  
+   
     const pdf = new jsPDF();
   
     selectedRooms.forEach((roomId) => {
@@ -185,7 +227,7 @@ const Roomdetails = () => {
     pdf.save('booking_confirmation.pdf');
     closeBookingPopup();
   };
-  
+    
 
   if (!hotel) {
     return <div>Loading...</div>;
@@ -195,10 +237,10 @@ const Roomdetails = () => {
     <div className="hotel-details-container container-hotel">
       <div className="left-side">
         <div className="carousel-room">
-          <Carousel>
+        <Carousel>
             {images.map((image, index) => (
               <div key={index}>
-                <img src={image.imageUrl} alt={`Image ${index + 1}`} />
+                <img src={image.amenityTypeOrImage} alt={`Image ${index + 1}`} />
               </div>
             ))}
           </Carousel>
@@ -210,7 +252,7 @@ const Roomdetails = () => {
           <p>Number of Rooms: {hotel.numberOfRooms}</p>
           <p>Contact: {hotel.contactNumber}</p>
           <p>Email: {hotel.email}</p>
-          <p>Price Range: {hotel.minimumPriceRange} - {hotel.maximumPriceRange}</p>
+          <p>Price Range:   &#x20B9;{hotel.minimumPriceRange}-&#x20B9;{hotel.maximumPriceRange}</p>
         </div>
       </div>
 

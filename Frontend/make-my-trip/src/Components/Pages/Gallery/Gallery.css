@@ -7,10 +7,8 @@
   font-family: "Poppins", sans-serif;
 }
 .img-h1 {
-  margin-top: 30px;
-  font-size: 30px;
-  position: relative;
-  left:160px;
+  text-align: center;
+  margin-top: 50px;
 }
 /* Masonry image gallery styling */
 .gallery {
@@ -105,7 +103,6 @@ header .buttons i {
 }
 header .buttons i:hover {
   background: #5f666d;
-  color: white;
 }
 .wrapper .preview-img {
   display: flex;

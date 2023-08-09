@@ -42,7 +42,7 @@ const Gallery = () => {
     }, []);
 
     return (
-        <section>
+        <section className="ga">
         <h1 className="img-h1" data-aos="fade-right">Image Gallery</h1>
         <div class="lightbox">
         <div class="wrapper">

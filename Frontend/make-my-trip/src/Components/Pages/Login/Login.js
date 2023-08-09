@@ -40,37 +40,39 @@ function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+  
+    const { phoneNumber, password } = users;
+  
+    // Validate input fields
+    if (!validatePhoneNumber(phoneNumber) || !validatePassword(password)) {
+      return;
+    }
 
-
-    const endpointlogin = 'http://localhost:5104/api/UserAuthentication/Login'; 
-    
-
+    const endpointlogin = 'http://localhost:5104/api/UserAuthentication/Login';
+  
     try {
-      console.log(users);
       const response = await fetch(endpointlogin, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(users)
-      });  
-
+        body: JSON.stringify(users),
+      });
+  
       if (response.ok) {
-        const responseData = await response.json(); 
-        console.log(responseData);
-          if (responseData !== "") {
-            sessionStorage.setItem("userId", responseData.userId);
-            sessionStorage.setItem("role", responseData.role);
-            sessionStorage.setItem("token", responseData.token);
-            sessionStorage.setItem("status", responseData.status);
+        const responseData = await response.json();
+        if (responseData !== '') {
+          sessionStorage.setItem('userId', responseData.userId);
+          sessionStorage.setItem('role', responseData.role);
+          sessionStorage.setItem('token', responseData.token);
+          sessionStorage.setItem('status', responseData.status);
         }
-        if(responseData.role == "admin"){
-          navigate("/adminPage");
-        }
-        else if (responseData.role == "traveller") {
-           navigate("/travellerPage")
+        if (responseData.role === 'admin') {
+          navigate('/adminPage');
+        } else if (responseData.role === 'traveller') {
+          navigate('/travellerPage');
         } else {
-          navigate("/agentPage");
+          navigate('/agentPage');
         }
       } else {
         const data = await response.json();
@@ -80,6 +82,7 @@ function Login() {
       toast.error('An error occurred. Please try again later.');
     }
   };
+  
 
   const handleUserTypeChange = () => {
     setIsBusinessUser((prev) => !prev);
@@ -87,29 +90,46 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-   const endpoint = isBusinessUser
-   ? 'http://localhost:5104/api/UserAuthentication/TravelAgentRegistration'
-   : 'http://localhost:5104/api/UserAuthentication/TravellerRegistration';
-
+  
+    const endpoint = isBusinessUser
+      ? 'http://localhost:5104/api/UserAuthentication/TravelAgentRegistration'
+      : 'http://localhost:5104/api/UserAuthentication/TravellerRegistration';
+  
+    // Destructure user data
+    const {
+      username,
+      name,
+      emailId,
+      phoneNumber
+    } = user.user;
+  
+    // Validate input fields
+    if (
+      !validateUsername(username) ||
+      !validateName(name) ||
+      !validateEmail(emailId) ||
+      !validatePhoneNumber(phoneNumber)
+    ) {
+      return;
+    }
+  
     try {
-      console.log(user);
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(user)
-      });  
-
+        body: JSON.stringify(user),
+      });
+  
       if (response.ok) {
-        const responseData = await response.json(); 
+        const responseData = await response.json();
         if (responseData.status === 200) {
           if (responseData.token !== "") {
             localStorage.setItem("token", responseData.token);
           }
         }
-        navigate("/home");
+        toast.success("Registration Successfull");
       } else {
         const data = await response.json();
         toast.error(data.message || 'Registration failed. Please try again.');
@@ -118,6 +138,49 @@ function Login() {
       toast.error('An error occurred. Please try again later.');
     }
   };
+  
+
+  const validatePhoneNumber = (phoneNumber) => {
+    if (phoneNumber.length < 10) {
+      toast.error('Phone number must have at least 10 characters.');
+      return false;
+    }
+    return true;
+  };
+
+  const validatePassword = (password) => {
+    if (password.length < 8) {
+      toast.error('Password must have at least 8 characters.');
+      return false;
+    }
+    return true;
+  };
+
+  const validateUsername = (username) => {
+    if (username.trim() === "") {
+      toast.error('Username is required.');
+      return false;
+    }
+    return true;
+  };
+  
+  const validateName = (name) => {
+    if (name.trim() === "") {
+      toast.error('Name is required.');
+      return false;
+    }
+    return true;
+  };
+  
+  const validateEmail = (email) => {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(email)) {
+      toast.error('Invalid email address.');
+      return false;
+    }
+    return true;
+  };
+  
 
   useEffect(() => {
     const sign_in_btn = document.querySelector("#sign-in-btn");

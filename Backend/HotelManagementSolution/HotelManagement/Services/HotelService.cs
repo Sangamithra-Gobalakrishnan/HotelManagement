@@ -26,9 +26,9 @@ namespace HotelManagement.Services
 
             if (addedHotel != null)
             {
-                bool amenitiesCreated = hotel.AmenityType == null || hotel.AmenityType.All(amenity => _amenityRepo.Add(amenity) != null);
-                bool imagesCreated = hotel.Images == null || hotel.Images.All(image => _imageRepo.Add(image) != null);
-                if (amenitiesCreated && imagesCreated)
+                //bool amenitiesCreated = hotel.AmenityType == null || hotel.AmenityType.All(amenity => _amenityRepo.Add(amenity) != null);
+                //bool imagesCreated = hotel.Images == null || hotel.Images.All(image => _imageRepo.Add(image) != null);
+                //if (amenitiesCreated && imagesCreated)
                     return MapModelToDTO(addedHotel);
             }
             return null;
